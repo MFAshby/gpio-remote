@@ -1,0 +1,47 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.PinStateTable {
+  float: right;
+}
+.Arrow  {
+  width: 120px;
+  height: 120px;
+  background: url("arrow.svg");
+  background-size: 120px 120px;
+}
+.Arrow.left {
+  transform: rotate(-90deg);
+}
+.Arrow.right {
+  transform: rotate(90deg);
+}
+.Arrow.down {
+  transform: rotate(180deg);
+}
+
+.Arrow.active {
+  background: url("arrow-active.svg");
+  background-size: 120px 120px;
+}

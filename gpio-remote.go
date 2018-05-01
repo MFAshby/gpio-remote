@@ -169,7 +169,7 @@ func main() {
     }
 
     // Start serving web
-    http.Handle("/", http.FileServer(http.Dir("./static")))
+    http.Handle("/", http.FileServer(http.Dir("./build")))
     http.HandleFunc("/ws", wsHandler)
     log.Fatal(http.ListenAndServe(listenAddress, nil))
 }
