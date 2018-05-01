@@ -2,8 +2,6 @@
 
 A remote control application for Raspberry Pi powered robots. 
 
-![screenshot]('./screenshot.png')
-
 To use:
 1. Download the zip from 
 `https://raw.githubusercontent.com/MFAshby/gpio-remote/master/gpio-remote.zip`
@@ -24,3 +22,5 @@ To build:
 `go build gpio-remote.go`
 5. Run the server & connect via your web browser as above
 `./gpio-remote`
+
+![screenshot](./screenshot.png "screenshot")  
