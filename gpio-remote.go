@@ -23,8 +23,13 @@ var (
     upgrader = websocket.Upgrader{
         ReadBufferSize: 1024,
         WriteBufferSize: 1024,
+        CheckOrigin: checkOrigin,
     }
 )
+
+func checkOrigin(r *http.Request) bool {
+    return true
+}
 
 
 // Write out the state of all pins in a nice JSON format
