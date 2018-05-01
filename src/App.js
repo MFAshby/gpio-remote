@@ -244,6 +244,7 @@ class ConfigComponent extends Component {
   }
 }
 
+const configKey = "motorConfig"
 class App extends Component {
   constructor(props) {
     super(props)
@@ -252,9 +253,15 @@ class App extends Component {
     this.sendCommand = this.sendCommand.bind(this)
     this.setConfig = this.setConfig.bind(this)
 
+    var motorConfig
+    try {
+      motorConfig = JSON.parse(localStorage.getItem(configKey))
+    } catch (e) {
+      motorConfig = MotorConfig()
+    }
     this.state = {
       pins: [],
-      motorConfig: MotorConfig()
+      motorConfig: motorConfig
     }
 
     var websocketLocation = "ws://" + window.location.host + "/ws"
@@ -274,6 +281,7 @@ class App extends Component {
   }
 
   setConfig(config) {
+    localStorage.setItem(configKey, JSON.stringify(config))
     this.setState({
       motorConfig: config
     })
