@@ -11,16 +11,12 @@ To use:
 5. Drive around & scare your dog.
 
 To build: 
-1. Install go & node & npm
-`sudo apt install nodejs npm golang-go`
-2. Clone the source to gpio-remote folder
+1. Install go [https://golang.org/] & node [https://nodejs.org/]
+2. Clone the source code
 `git clone https://github.com/MFAshby/gpio-remote.git`
-3. Build the webpage with npm build
-`cd gpio-remote`
-`npm install && npm build`
-4. Build the server with go build gpio-remote.go
-`go build gpio-remote.go`
-5. Run the server & connect via your web browser as above
+3. Run the build script
+`cd gpio-remote && ./build.sh`
+4. Run the server & connect via your web browser as above
 `./gpio-remote`
 
 ![screenshot](./screenshot.png "screenshot")  
