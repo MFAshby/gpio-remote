@@ -1,0 +1,36 @@
+.arrowhead {
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+#uparrow {
+    top: 0;
+    left: 10em;
+    border-left: 10em solid transparent;
+    border-right: 10em solid  transparent;
+    border-bottom: 10em solid blue;
+}
+
+#downarrow {
+    top: 30em;
+    left: 10em;
+    border-left: 10em solid transparent;
+    border-right: 10em solid  transparent;
+    border-top: 10em solid yellow;
+}
+
+#leftarrow {
+    top: 10em;
+    border-top: 10em solid transparent;
+    border-bottom: 10em solid transparent;
+    border-right: 10em solid red;
+}
+
+#rightarrow {
+    top: 10em;
+    left: 30em;
+    border-top: 10em solid transparent;
+    border-bottom: 10em solid transparent;
+    border-left: 10em solid green;
+}
