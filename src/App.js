@@ -70,6 +70,9 @@ function DirectionPinState(config = MotorConfig(), direction = "none"){
             PinState(config.m1b, "output", "low"),
             PinState(config.m2f, "output", "low"),
             PinState(config.m2b, "output", "low")]
+    default: 
+    console.log("requested direction " + direction + " but no pin config for that")
+    return []
   }
 }
 
@@ -210,7 +213,7 @@ class ConfigComponent extends Component {
 
   onChangeField(event, field) {
     var newConfig = {...this.props.motorConfig}
-    newConfig[field] = parseInt(event.target.value)
+    newConfig[field] = parseInt(event.target.value, 10)
     this.props.setConfig(newConfig)
   }
 
@@ -254,30 +257,24 @@ class App extends Component {
     this.setConfig = this.setConfig.bind(this)
 
     var motorConfig
-    
-    try {
-      motorConfig = JSON.parse(localStorage.getItem(configKey))
-    } catch (e) {}
-
-    //The above can error or return null so play it safe
-    motorConfig = motorConfig || MotorConfig()
+    var motorConfigJson = localStorage.getItem(configKey)
+    if (motorConfigJson !== null) {
+      motorConfig = JSON.parse(motorConfigJson)
+    } else {
+      motorConfig = MotorConfig()
+    }
+    console.log("Config is " + motorConfig)
 
     this.state = {
       pins: [],
       motorConfig: motorConfig
     }
 
-    var websocketLocation = "ws://" + window.location.host + "/ws"
+    var websocketLocation = "ws://shinypi:8080/ws"
+    // var websocketLocation = "ws://" + window.location.host + "/ws"
     
     this.ws = new WebSocket(websocketLocation)
     this.ws.onmessage = this.pinDataReceived
-
-    this.ws.onerror = () => {
-      // Try development server instead
-      websocketLocation = "ws://shinypi:8080/ws"
-      this.ws = new WebSocket(websocketLocation)
-      this.ws.onmessage = this.pinDataReceived
-    }
   }
 
   pinDataReceived({data}) {
