@@ -1,10 +1,107 @@
 import React, { Component } from 'react';
 import './App.css';
 
-// Pins are array of objects with Mode & State,
-// pin number is just hte index inthe array
+var Directions = {
+  up: "up",
+  // upleft: "upleft",
+  // upright: "upright",
+  left: "left",
+  right: "right",
+  down: "down",
+  // downleft: "downleft",
+  // downright: "downright",
+  none: "none"
+}
 
-// Commands should be send with Pin, Mode & State 
+// Motor 1 pins (enable, forward, backward)
+function MotorConfig(m1e = 16, m1f = 18, m1b = 22, m2e = 19, m2f = 23, m2b = 21) {
+  return {
+    m1e: m1e, 
+    m1f: m1f, 
+    m1b: m1b,
+    m2e: m2e,
+    m2f: m2f, 
+    m2b: m2b
+  }
+}
+
+function PinState(Pin, Mode, State) {
+  return {
+    Pin:  Pin,
+    Mode: Mode,
+    State: State
+  }
+}
+
+function DirectionPinState(config = MotorConfig(), direction = "none"){
+  switch (direction) {
+    case Directions.up:
+    return [PinState(config.m1e, "output", "high"), 
+            PinState(config.m2e, "output", "high"),
+            PinState(config.m1f, "output", "high"),
+            PinState(config.m2f, "output", "high"),
+            PinState(config.m1b, "output", "low"),
+            PinState(config.m2b, "output", "low")]
+    case Directions.left: 
+    return[ PinState(config.m1e, "output", "high"), 
+            PinState(config.m2e, "output", "high"),
+            PinState(config.m1f, "output", "low"),
+            PinState(config.m2f, "output", "high"),
+            PinState(config.m1b, "output", "high"),
+            PinState(config.m2b, "output", "low")]
+    case Directions.right:
+    return [PinState(config.m1e, "output", "high"), 
+            PinState(config.m2e, "output", "high"),
+            PinState(config.m1f, "output", "high"),
+            PinState(config.m2f, "output", "low"),
+            PinState(config.m1b, "output", "low"),
+            PinState(config.m2b, "output", "high")]
+    case Directions.down:
+    return [PinState(config.m1e, "output", "high"), 
+            PinState(config.m2e, "output", "high"),
+            PinState(config.m1f, "output", "low"),
+            PinState(config.m2f, "output", "low"),
+            PinState(config.m1b, "output", "high"),
+            PinState(config.m2b, "output", "high")]
+    case Directions.none:
+    return [PinState(config.m1e, "output", "low"), 
+            PinState(config.m2e, "output", "low"),
+            PinState(config.m1f, "output", "low"),
+            PinState(config.m1b, "output", "low"),
+            PinState(config.m2f, "output", "low"),
+            PinState(config.m2b, "output", "low")]
+  }
+}
+
+function comparePinStates(actual = [], expected = []) {
+  for (var i=0; i<expected.length; i++) {
+    var pinState = expected[i]
+    var actualPin = actual[pinState.Pin]
+    if (!actualPin) {
+      return false
+    }
+
+    if (actualPin.Mode !== pinState.Mode) {
+      return false
+    }
+
+    if (actualPin.State !== pinState.State) {
+      return false
+    }
+  }
+
+  return true
+}
+
+function calculateDirection(pins, config) {
+  for (var direction in Directions) {
+    var pinState = DirectionPinState(config, direction)
+    if (comparePinStates(pins, pinState)) {
+      return direction
+    }
+  }
+  return Directions.none
+}
 
 class PinStateTable extends Component {
   render() {
@@ -35,121 +132,6 @@ class PinStateTable extends Component {
   }
 }
 
-var Directions = {
-  up: "up",
-  upleft: "upleft",
-  upright: "upright",
-  left: "left",
-  right: "right",
-  down: "down",
-  downleft: "downleft",
-  downright: "downright",
-  none: ""
-}
-
-function pC(pin, mode, state) {
-  return {
-    Pin: pin,
-    Mode: mode, 
-    State: state
-  }
-}
-
-// Make these a setting
-var m1e = 16
-var m1f = 18
-var m1b = 22
-var m2e = 19
-var m2f = 23
-var m2b = 21
-
-function calculateCommands(direction) {
-  if (direction === Directions.none) {
-    return [ pC(m1e, "output", "low"), 
-             pC(m2e, "output", "low"),
-             pC(m1f, "output", "low"),
-             pC(m1b, "output", "low"),
-             pC(m2f, "output", "low"),
-             pC(m2b, "output", "low")]
-  } else if (direction === Directions.up) {
-    return [ pC(m1e, "output", "high"), 
-             pC(m2e, "output", "high"),
-             pC(m1f, "output", "high"),
-             pC(m2f, "output", "high"),
-             pC(m1b, "output", "low"),
-             pC(m2b, "output", "low")]
-  } else if (direction === Directions.down) {
-    return [ pC(m1e, "output", "high"), 
-             pC(m2e, "output", "high"),
-             pC(m1f, "output", "low"),
-             pC(m2f, "output", "low"),
-             pC(m1b, "output", "high"),
-             pC(m2b, "output", "high")]
-  } else if (direction === Directions.left) {
-    return [ pC(m1e, "output", "high"), 
-             pC(m2e, "output", "high"),
-             pC(m1f, "output", "low"),
-             pC(m2f, "output", "high"),
-             pC(m1b, "output", "high"),
-             pC(m2b, "output", "low")]
-  } else if (direction === Directions.right) {
-    return [ pC(m1e, "output", "high"), 
-             pC(m2e, "output", "high"),
-             pC(m1f, "output", "high"),
-             pC(m2f, "output", "low"),
-             pC(m1b, "output", "low"),
-             pC(m2b, "output", "high")]
-  }
-
-  console.log("Couldn't calculate pin settings for direction " + direction)
-  return []
-}
-
-function calculateDirection(pins) {
-  if (pins.length < 24) {
-    console.log("Pins not initialized, can't calculate direction")
-    return Directions.none
-  }
-  var motor1enabled = pins[m1e].State === "high"
-  var motor1forward = pins[m1f].State === "high"
-  var motor1backward = pins[m1b].State === "high"
-  var motor2enabled = pins[m2e].State === "high"
-  var motor2forward = pins[m2f].State === "high"
-  var motor2backward = pins[m2b].State === "high"
-
-  if (!motor1enabled && !motor2enabled) {
-    return Directions.none
-  }
-  else if (motor1enabled && !motor2enabled) {
-    if (motor1forward) {
-      return Directions.upright
-    } else if (motor1backward) {
-      return Directions.downright
-    }
-  } 
-  else if (!motor1enabled && motor2enabled) {
-    if (motor2forward) {
-      return Directions.upleft
-    } else if (motor2backward) {
-      return Directions.downleft
-    }
-  }
-  else if (motor1enabled && motor2enabled) {
-    if (motor1forward && motor2forward) {
-      return Directions.up
-    } else if (motor1backward && motor2backward) {
-      return Directions.down
-    } else if (motor1forward && motor2backward) {
-      return Directions.right
-    } else if (motor1backward && motor2forward) {
-      return Directions.left
-    }
-  }
-  console.log("Failed to work out robot direction!")
-  console.log(pins)
-  return Directions.none
-}
-
 class Arrow extends Component {
   render() {
     var className = `Arrow ${this.props.direction} ${this.props.active ? "active": ""}`
@@ -170,12 +152,12 @@ class ArrowControls extends Component {
   }
 
   changeDirection(newDirection) {
-    var cmds = calculateCommands(newDirection)
-    cmds.forEach((cmd) => this.props.sendCommand(cmd))
+    var newPinStates = DirectionPinState(this.props.motorConfig, newDirection)
+    newPinStates.forEach((newPinState) => this.props.sendCommand(newPinState))
   }
   
   render() {
-    var activeDirection = calculateDirection(this.props.pins)
+    var activeDirection = calculateDirection(this.props.pins, this.props.motorConfig)
     return (
       <table>
         <tbody>
@@ -220,25 +202,81 @@ class ArrowControls extends Component {
   }
 }
 
+class ConfigComponent extends Component {
+  constructor(props) {
+    super(props)
+    this.onChangeField = this.onChangeField.bind(this)
+  }
+
+  onChangeField(event, field) {
+    var newConfig = {...this.props.motorConfig}
+    newConfig[field] = parseInt(event.target.value)
+    this.props.setConfig(newConfig)
+  }
+
+  render() {
+    return (
+      <div>
+        <table>
+          <tbody>
+            <tr>
+              <td><label htmlFor="m1e">Motor 1 enable pin</label></td>
+              <td><input type="number" id="m1e" value={this.props.motorConfig.m1e} onChange={(event) => this.onChangeField(event, "m1e")}/></td>
+            </tr><tr>
+              <td><label htmlFor="m1f">Motor 1 forward pin</label></td>
+              <td><input type="number" id="m1f" value={this.props.motorConfig.m1f} onChange={(event) => this.onChangeField(event, "m1f")}/></td>
+            </tr><tr>
+              <td><label htmlFor="m1b">Motor 1 backward pin</label></td>
+              <td><input type="number" id="m1b" value={this.props.motorConfig.m1b} onChange={(event) => this.onChangeField(event, "m1b")}/></td>
+            </tr><tr>
+              <td><label htmlFor="m2e">Motor 2 enable pin</label></td>
+              <td><input type="number" id="m2e" value={this.props.motorConfig.m2e} onChange={(event) => this.onChangeField(event, "m2e")}/></td>
+            </tr><tr>
+              <td><label htmlFor="m2f">Motor 2 forward pin</label></td>
+              <td><input type="number" id="m2f" value={this.props.motorConfig.m2f} onChange={(event) => this.onChangeField(event, "m2f")}/></td>
+            </tr><tr>
+              <td><label htmlFor  ="m2b">Motor 2 backward pin</label></td>
+              <td><input type="number" id="m2b" value={this.props.motorConfig.m2b} onChange={(event) => this.onChangeField(event, "m2b")}/></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>)
+  }
+}
+
 class App extends Component {
   constructor(props) {
     super(props)
+
+    this.pinDataReceived = this.pinDataReceived.bind(this)
+    this.sendCommand = this.sendCommand.bind(this)
+    this.setConfig = this.setConfig.bind(this)
+
     this.state = {
       pins: [],
+      motorConfig: MotorConfig()
     }
 
-    // var websocketLocation = "ws://" + loc.host + "/ws"
-    var websocketLocation = "ws://shinypi:8080/ws"
+    var websocketLocation = "ws://" + window.location.host + "/ws"
+    // var websocketLocation = "ws://shinypi:8080/ws"
     this.ws = new WebSocket(websocketLocation)
-    this.ws.onmessage = ({data}) => {
-      this.setState({pins: JSON.parse(data)})
-    }
+    this.ws.onmessage = this.pinDataReceived
+  }
 
-    this.sendCommand = this.sendCommand.bind(this)
+  pinDataReceived({data}) {
+    this.setState({
+      pins: JSON.parse(data)
+    })
   }
 
   sendCommand(cmd) {
     this.ws.send(JSON.stringify(cmd))
+  }
+
+  setConfig(config) {
+    this.setState({
+      motorConfig: config
+    })
   }
 
   render() {
@@ -248,7 +286,8 @@ class App extends Component {
           <h1 className="App-title">Raspberry Pi GPIO remote</h1>
         </header>
         <PinStateTable pins={this.state.pins}/>
-        <ArrowControls pins={this.state.pins} sendCommand={this.sendCommand}/>
+        <ArrowControls motorConfig={this.state.motorConfig} pins={this.state.pins} sendCommand={this.sendCommand}/>
+        <ConfigComponent motorConfig={this.state.motorConfig} setConfig={this.setConfig}/>
       </div>
     );
   }
