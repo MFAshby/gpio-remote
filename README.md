@@ -3,12 +3,11 @@
 A remote control application for Raspberry Pi powered robots. 
 
 To use:
-1. Download the zip from 
-[https://raw.githubusercontent.com/MFAshby/gpio-remote/master/gpio-remote.zip]
-2. Extract it to your preferred location and run 'gpio-remote' executable
-3. Open a web browser to your Pi's IP address at port 8080 (e.g. 192.168.1.200:8080)
-4. Set the correct pins for controlling the motors.
-5. Drive around & scare your dog.
+1. Open a terminal, and run the following command
+`curl https://raw.githubusercontent.com/MFAshby/gpio-remote/master/downloadAndRun.sh | bash`
+2. Open a web browser to your Pi's IP address at port 8080 (e.g. 192.168.1.200:8080)
+3. Set the correct pins for controlling the motors.
+4. Drive around & scare your dog.
 
 To build: 
 1. Install go [https://golang.org/] & node [https://nodejs.org/]
