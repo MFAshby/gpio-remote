@@ -270,8 +270,7 @@ class App extends Component {
       motorConfig: motorConfig
     }
 
-    var websocketLocation = "ws://shinypi:8080/ws"
-    // var websocketLocation = "ws://" + window.location.host + "/ws"
+    var websocketLocation = "ws://" + window.location.host + "/ws"
     
     this.ws = new WebSocket(websocketLocation)
     this.ws.onmessage = this.pinDataReceived
